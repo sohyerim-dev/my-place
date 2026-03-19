@@ -47,6 +47,8 @@ export default function PostCard({
   const [comments, setComments] = useState<CommentWithProfile[]>(post.comments);
   const [commentInput, setCommentInput] = useState("");
   const [imageIndex, setImageIndex] = useState(0);
+  const [touchStart, setTouchStart] = useState(0);
+  const [touchEnd, setTouchEnd] = useState(0);
 
   async function handleCommentSubmit() {
     if (!commentInput.trim()) return;
@@ -67,7 +69,10 @@ export default function PostCard({
       .single();
 
     if (newComment) {
-      setComments((prev) => [...prev, newComment as unknown as CommentWithProfile]);
+      setComments((prev) => [
+        ...prev,
+        newComment as unknown as CommentWithProfile,
+      ]);
       setCommentInput("");
     }
   }
@@ -127,15 +132,12 @@ export default function PostCard({
   if (deleted) return null;
 
   return (
-    <article className="pb-4 mb-10">
+    <article className="pb-4 border-b border-gray-100">
       {/* 상단: 프로필 */}
       <div className="flex items-center justify-between px-4 py-3">
         <div className="flex items-center gap-3">
           <img
-            src={
-              post.profiles?.avatar_url ||
-              "/images/default-avatar.svg"
-            }
+            src={post.profiles?.avatar_url || "/images/default-avatar.svg"}
             alt=""
             className="w-8 h-8 rounded-full object-cover"
           />
@@ -154,13 +156,30 @@ export default function PostCard({
       </div>
 
       {/* 이미지 캐러셀 */}
-      <div className="relative w-full aspect-3/4 bg-gray-200">
+      <div
+        className="relative w-full aspect-3/4 bg-gray-200 overflow-hidden"
+        onTouchStart={(e) => {
+          setTouchStart(e.touches[0].clientX);
+          setTouchEnd(e.touches[0].clientX);
+        }}
+        onTouchMove={(e) => setTouchEnd(e.touches[0].clientX)}
+        onTouchEnd={() => {
+          const diff = touchStart - touchEnd;
+          if (Math.abs(diff) > 50) {
+            if (diff > 0 && imageIndex < post.post_images.length - 1) {
+              setImageIndex((prev) => prev + 1);
+            } else if (diff < 0 && imageIndex > 0) {
+              setImageIndex((prev) => prev - 1);
+            }
+          }
+        }}
+      >
         {post.post_images.map((img, i) => (
           <img
             key={i}
             src={img.image_url}
             alt=""
-            className={`absolute inset-0 w-full h-full object-cover ${i === imageIndex ? "opacity-100" : "opacity-0 pointer-events-none"}`}
+            className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-300 ${i === imageIndex ? "opacity-100" : "opacity-0 pointer-events-none"}`}
           />
         ))}
         {imageIndex > 0 && (
@@ -190,7 +209,7 @@ export default function PostCard({
             href={`/place/${post.places?.id}`}
             className="flex items-center gap-1 cursor-pointer"
           >
-            <Image src="/icons/place.svg" alt="" width={14} height={20.5} />
+            <Image src="/icons/place.svg" alt="" width={14} height={21} />
             <span className="text-[14px] font-medium mx-1">
               {post.places?.name}
             </span>

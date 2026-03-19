@@ -19,7 +19,7 @@ export default function AuthProvider({
 
     // 로그인 상태 확인
     supabase.auth.getUser().then(({ data: { user } }) => {
-      console.log("user:", user);
+      // console.log("user:", user);
       if (!user) {
         router.push("/login");
         return;

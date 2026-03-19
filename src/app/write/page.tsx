@@ -216,7 +216,7 @@ export default function WritePage() {
             onClick={() => setShowPlaceModal(true)}
             className="flex items-center gap-2 w-full"
           >
-            <Image src="/icons/place.svg" alt="" width={16} height={22} />
+            <Image src="/icons/place.svg" alt="" width={14} height={21} />
             <span
               className={`text-[14px] ${place ? "text-black" : "text-gray-400"}`}
             >

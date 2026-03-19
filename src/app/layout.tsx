@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import AuthProvider from "@/components/AuthProvider";
+import SplashScreen from "@/components/SplashScreen";
 
 export const metadata: Metadata = {
   title: "My Place",
@@ -29,7 +30,9 @@ export default function RootLayout({
         />
       </head>
       <body className="antialiased">
-        <AuthProvider>{children}</AuthProvider>
+        <SplashScreen>
+          <AuthProvider>{children}</AuthProvider>
+        </SplashScreen>
       </body>
     </html>
   );

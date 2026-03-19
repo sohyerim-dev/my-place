@@ -42,14 +42,13 @@ export default function PlaceDetailPage() {
       if (placeData) setPlace(placeData as Place);
 
       if (user) {
-        const { data: saveData } = await supabase
+        const { count } = await supabase
           .from("place_saves")
-          .select("id")
+          .select("id", { count: "exact", head: true })
           .eq("place_id", placeId)
-          .eq("user_id", user.id)
-          .single();
+          .eq("user_id", user.id);
 
-        setSaved(!!saveData);
+        setSaved((count ?? 0) > 0);
       }
     }
 
@@ -99,7 +98,7 @@ export default function PlaceDetailPage() {
             <Image src="/icons/arrow-left.svg" alt="" width={24} height={24} />
           </button>
           <div className="flex items-center gap-1">
-            <Image src="/icons/place.svg" alt="" width={14} height={20.5} />
+            <Image src="/icons/place.svg" alt="" width={14} height={21} />
             <span className="text-[16px] font-semibold">{place.name}</span>
           </div>
           <button
@@ -124,7 +123,7 @@ export default function PlaceDetailPage() {
         {/* 장소 정보 */}
         <div className="px-4 py-5 flex flex-col gap-3">
           <div className="flex items-center gap-2">
-            <Image src="/icons/pin.svg" alt="" width={14} height={20.5} />
+            <Image src="/icons/pin.svg" alt="" width={20} height={20} />
             <span className="text-[14px]">{place.address}</span>
           </div>
           <a

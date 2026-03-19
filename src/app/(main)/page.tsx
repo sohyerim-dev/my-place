@@ -19,7 +19,7 @@ export default async function Home() {
   return (
     <>
       <TopNav />
-      <main className="pt-25">
+      <main className="pt-15 mb-4">
         {posts?.map((post) => (
           <PostCard
             key={post.id}
