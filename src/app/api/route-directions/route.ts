@@ -20,7 +20,7 @@ export async function POST(req: NextRequest) {
     travelMode: "TRANSIT",
   });
 
-  // Promise.all은 두 요청을 동시에 보내서 기다림.
+  // Promise.all은 두 요청(대중교통 경로, 도보 경로)을 동시에 보내서 기다림.
   const [transitRes, tmapRes] = await Promise.all([
     fetch("https://routes.googleapis.com/directions/v2:computeRoutes", {
       method: "POST",
